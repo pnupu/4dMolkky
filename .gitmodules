@@ -1,0 +1,3 @@
+[submodule "external/Engine4D"]
+	path = external/Engine4D
+	url = https://github.com/HackerPoet/Engine4D.git

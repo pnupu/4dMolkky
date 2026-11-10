@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#191713">
+  <title>4D Mölkky — Jam Runbook</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --paper: #f4efe4;
+      --surface: #fffdf8;
+      --ink: #26221b;
+      --muted: #6f675c;
+      --rule: #d8cfbf;
+      --accent: #9b3f2c;
+      --accent-dark: #713023;
+      --green: #2f6848;
+      --yellow: #8a641c;
+      --red: #9b302b;
+      --focus: #3c684f;
+      --radius: 8px;
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 24px;
+      --space-6: 32px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font: 15px/1.5 Avenir Next, Avenir, Helvetica Neue, sans-serif;
+    }
+    button, input { font: inherit; }
+    a { color: var(--accent-dark); text-underline-offset: 3px; }
+    a:focus-visible, button:focus-visible, input:focus-visible {
+      outline: 3px solid color-mix(in srgb, var(--focus) 45%, transparent);
+      outline-offset: 2px;
+    }
+
+    header {
+      background: #191713;
+      color: #f8f1e5;
+      border-bottom: 4px solid var(--accent);
+    }
+    .header-inner, main, footer {
+      width: min(1080px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+    .header-inner { padding: 20px 0 16px; }
+    h1 { margin: 0; font-size: clamp(24px, 6vw, 38px); line-height: 1.1; letter-spacing: -0.025em; }
+    .deadline { margin: 8px 0 0; color: #d7cdbc; font-variant-numeric: tabular-nums; }
+
+    nav {
+      overflow-x: auto;
+      background: #29251f;
+      border-top: 1px solid #403a31;
+      scrollbar-width: thin;
+    }
+    nav .nav-inner {
+      width: min(1080px, calc(100% - 32px));
+      margin: 0 auto;
+      display: flex;
+      gap: 20px;
+      white-space: nowrap;
+    }
+    nav a {
+      padding: 11px 0;
+      color: #f0e7d8;
+      text-decoration: none;
+      border-bottom: 2px solid transparent;
+    }
+    nav a:hover { border-bottom-color: #d9a091; }
+
+    main { padding: 24px 0 48px; }
+    section { margin: 0 0 32px; scroll-margin-top: 12px; }
+    h2 { margin: 0 0 12px; font-size: 21px; line-height: 1.25; }
+    h3 { margin: 20px 0 8px; font-size: 16px; }
+    p { margin: 8px 0; }
+    .intro { max-width: 760px; color: var(--muted); }
+
+    .status-line {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      border: 1px solid var(--rule);
+      background: var(--surface);
+    }
+    .status-line > div { padding: 14px 16px; border-right: 1px solid var(--rule); }
+    .status-line > div:last-child { border-right: 0; }
+    .status-line dt { margin: 0 0 4px; color: var(--muted); }
+    .status-line dd { margin: 0; font-weight: 650; }
+    .state-green { color: var(--green); }
+
+    .gate {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 16px;
+      padding: 14px 0;
+      border-top: 1px solid var(--rule);
+    }
+    .gate:last-child { border-bottom: 1px solid var(--rule); }
+    .gate time { color: var(--accent-dark); font-weight: 650; font-variant-numeric: tabular-nums; }
+    .gate strong { display: block; margin-bottom: 2px; }
+    .gate p { margin: 0; color: var(--muted); }
+
+    .checklist { padding: 0; margin: 0; list-style: none; border-top: 1px solid var(--rule); }
+    .checklist li { border-bottom: 1px solid var(--rule); }
+    .checklist label { display: flex; gap: 12px; padding: 12px 4px; cursor: pointer; }
+    .checklist input { width: 20px; height: 20px; flex: 0 0 auto; accent-color: var(--green); }
+    .checklist input:checked + span { color: var(--muted); text-decoration: line-through; }
+
+    .lanes { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); border: 1px solid var(--rule); }
+    .lane { padding: 16px; background: var(--surface); }
+    .lane:nth-child(odd) { border-right: 1px solid var(--rule); }
+    .lane:nth-child(-n+2) { border-bottom: 1px solid var(--rule); }
+    .lane h3 { margin: 0 0 6px; }
+    .lane p { margin: 0; color: var(--muted); }
+
+    .commands { display: grid; gap: 8px; }
+    .command {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 12px;
+      background: var(--surface);
+      border: 1px solid var(--rule);
+      border-radius: var(--radius);
+    }
+    .command code { overflow-wrap: anywhere; font: 13px/1.45 SFMono-Regular, Consolas, monospace; }
+    .copy {
+      min-height: 40px;
+      padding: 7px 11px;
+      border: 1px solid var(--accent);
+      border-radius: 6px;
+      background: transparent;
+      color: var(--accent-dark);
+      cursor: pointer;
+    }
+    .copy:active { background: #f2ded6; }
+
+    .cut-table { width: 100%; border-collapse: collapse; background: var(--surface); }
+    .cut-table th, .cut-table td { padding: 10px 12px; text-align: left; vertical-align: top; border: 1px solid var(--rule); }
+    .cut-table th { background: #ebe3d6; }
+    .p0 { color: var(--green); font-weight: 700; }
+    .stretch { color: var(--muted); }
+
+    .warning {
+      border-left: 4px solid var(--yellow);
+      padding: 10px 14px;
+      background: #fbf4df;
+    }
+    .warning strong { color: #684a11; }
+
+    details { border-top: 1px solid var(--rule); }
+    details:last-child { border-bottom: 1px solid var(--rule); }
+    summary { padding: 12px 4px; cursor: pointer; font-weight: 650; }
+    details div { padding: 0 4px 14px; color: var(--muted); }
+
+    footer { padding: 20px 0 40px; color: var(--muted); border-top: 1px solid var(--rule); }
+    footer p { margin: 0; }
+
+    @media (max-width: 680px) {
+      .header-inner, main, footer, nav .nav-inner { width: min(100% - 24px, 1080px); }
+      .status-line { grid-template-columns: 1fr; }
+      .status-line > div { border-right: 0; border-bottom: 1px solid var(--rule); }
+      .status-line > div:last-child { border-bottom: 0; }
+      .gate { grid-template-columns: 1fr; gap: 4px; }
+      .lanes { grid-template-columns: 1fr; }
+      .lane:nth-child(n) { border-right: 0; border-bottom: 1px solid var(--rule); }
+      .lane:last-child { border-bottom: 0; }
+      .command { grid-template-columns: 1fr; }
+      .copy { width: 100%; }
+      .cut-table th:first-child, .cut-table td:first-child { width: 76px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-inner">
+      <h1>4D Mölkky jam runbook</h1>
+      <p class="deadline">4 Sep 18:00 → 6 Sep 18:00 · Helsinki</p>
+    </div>
+    <nav aria-label="Runbook sections">
+      <div class="nav-inner">
+        <a href="#status">Status</a>
+        <a href="#checkpoints">Checkpoints</a>
+        <a href="#agents">Agents</a>
+        <a href="#commands">Commands</a>
+        <a href="#scope">Scope</a>
+        <a href="#evidence">Evidence</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section id="status">
+      <h2>Current operating state</h2>
+      <p class="intro">The root T3 thread is the command channel. This page is the shared, phone-friendly snapshot and will be republished after gates.</p>
+      <dl class="status-line">
+        <div><dt>State</dt><dd class="state-green">Pre-jam planning</dd></div>
+        <div><dt>Current gate</dt><dd>Automation rehearsal</dd></div>
+        <div><dt>Submission target</dt><dd>Sunday 17:30</dd></div>
+      </dl>
+    </section>
+
+    <section id="checkpoints">
+      <h2>Human checkpoints</h2>
+      <p class="intro">Each review should take 15–25 minutes. Between them, agents continue against the approved P0 scope.</p>
+      <div class="gate"><time>Fri 17:50</time><div><strong>Theme and scope</strong><p>Pick one interpretation and authorize the smallest implementation.</p></div></div>
+      <div class="gate"><time>Fri 21:00</time><div><strong>First playable</strong><p>Test keyboard throw and cut anything that obscures the concept.</p></div></div>
+      <div class="gate"><time>Fri 23:30</time><div><strong>Phone gate</strong><p>Pass, allow one bounded repair, or make the iPhone optional.</p></div></div>
+      <div class="gate"><time>Sat 10:00</time><div><strong>Integration review</strong><p>Play the morning build and answer at most three blockers.</p></div></div>
+      <div class="gate"><time>Sat 15:00</time><div><strong>Readability</strong><p>Judge W cues, scoring, instructions, and physical comfort.</p></div></div>
+      <div class="gate"><time>Sat 21:00</time><div><strong>Feature freeze</strong><p>Select what survives and require a packaged candidate.</p></div></div>
+      <div class="gate"><time>Sun 10:00</time><div><strong>Archive test</strong><p>Launch the downloaded package, never the editor.</p></div></div>
+      <div class="gate"><time>Sun 14:00</time><div><strong>Hard freeze</strong><p>Only blocker fixes, packaging, evidence, and copy remain.</p></div></div>
+      <div class="gate"><time>Sun 16:30</time><div><strong>Release approval</strong><p>Validate archive, controls, specifications, and known issues.</p></div></div>
+      <div class="gate"><time>Sun 17:15</time><div><strong>Submit</strong><p>User performs or explicitly authorizes upload. Verify the download.</p></div></div>
+    </section>
+
+    <section>
+      <h2>Pre-jam readiness</h2>
+      <ul class="checklist" data-store="readiness">
+        <li><label><input type="checkbox"><span>One command builds the macOS player from Unity batch mode.</span></label></li>
+        <li><label><input type="checkbox"><span>EditMode/PlayMode smoke tests produce a saved log.</span></label></li>
+        <li><label><input type="checkbox"><span>Standalone demo captures screenshots automatically.</span></label></li>
+        <li><label><input type="checkbox"><span>A 10-second macOS screen recording succeeds with permission granted.</span></label></li>
+        <li><label><input type="checkbox"><span>T3 phone app can reopen the persistent root thread.</span></label></li>
+        <li><label><input type="checkbox"><span>Native iPhone spike sends motion plus arm/release to Unity.</span></label></li>
+        <li><label><input type="checkbox"><span>Itch.io draft, controls template, and credit ledger exist.</span></label></li>
+      </ul>
+    </section>
+
+    <section id="agents">
+      <h2>Agent lanes</h2>
+      <div class="lanes">
+        <article class="lane"><h3>Root · orchestrate and integrate</h3><p>Own backlog, file boundaries, Unity lease, builds, evidence, dashboard, and release candidates.</p></article>
+        <article class="lane"><h3>Lane A · gameplay and 4D rules</h3><p>Own state machine, throwing, pins, scoring, W behavior, focus, tests, and keyboard fallback.</p></article>
+        <article class="lane"><h3>Lane B · native iPhone</h3><p>Own SwiftUI, Core Motion, calibration, touch release, UDP/OSC, acknowledgements, and device evidence.</p></article>
+        <article class="lane"><h3>Lane C · presentation and QA</h3><p>Own HUD/help/credits, smoke flows, screenshots, recording, build review, and submission material.</p></article>
+      </div>
+      <p class="warning"><strong>Unity is single-lease.</strong> Only root or the explicitly named lease holder may open or build the project. Never run two instances.</p>
+    </section>
+
+    <section id="commands">
+      <h2>Phone steering commands</h2>
+      <p class="intro">Copy one command into the root T3 thread. The page itself does not send instructions.</p>
+      <div class="commands">
+        <div class="command"><code>Continue autonomously toward the current P0 gate. Do not add scope.</code><button class="copy" type="button">Copy</button></div>
+        <div class="command"><code>Status: only blockers, current build ID, and next human decision.</code><button class="copy" type="button">Copy</button></div>
+        <div class="command"><code>Approve the proposed fallback. Update the dashboard and continue.</code><button class="copy" type="button">Copy</button></div>
+        <div class="command"><code>Drop phone-controller work. Move Lane B to gameplay QA.</code><button class="copy" type="button">Copy</button></div>
+        <div class="command"><code>Freeze features. Fix only submission blockers and produce a candidate build.</code><button class="copy" type="button">Copy</button></div>
+        <div class="command"><code>Record a 20-second demo of the current candidate and report the artifact path.</code><button class="copy" type="button">Copy</button></div>
+        <div class="command"><code>Prepare the submission package, but do not upload it.</code><button class="copy" type="button">Copy</button></div>
+      </div>
+    </section>
+
+    <section id="scope">
+      <h2>Scope decision</h2>
+      <table class="cut-table">
+        <thead><tr><th>Class</th><th>Included work</th></tr></thead>
+        <tbody>
+          <tr><td class="p0">P0</td><td>Mac build, keyboard throw, five readable pins, resolve/score/reset/win, slice/W cues, short instructions, pause/quit, credits.</td></tr>
+          <tr><td>Preferred</td><td>Theme integration, pin focus, native iPhone input, score breakdown, audio/visual feedback, automated screenshots.</td></tr>
+          <tr><td class="stretch">Stretch</td><td>Full twelve pins, replay editor, multiple environments, multiplayer, VR, online services, level editor.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="evidence">
+      <h2>Agent evidence contract</h2>
+      <details open><summary>Build evidence</summary><div>Every candidate gets a manifest with version, build command, tests, known issues, SHA-256, screenshots, video, platform, and controls.</div></details>
+      <details><summary>Unity operation</summary><div>Prefer batch-mode editor commands and a standalone autoplay demo. The macOS Unity Editor has no dependable computer-control MCP in this setup.</div></details>
+      <details><summary>Video recording</summary><div>Launch the standalone player, run a deterministic demo, record a bounded interval with macOS screencapture, and store the original MOV under artifacts/videos.</div></details>
+      <details><summary>Agent update format</summary><div>STATE · DONE · EVIDENCE · BLOCKER · NEXT · DECIDE BY. Keep it short enough to review from a phone.</div></details>
+      <details><summary>Automatic cuts</summary><div>Phone optional after Friday 23:30 if not end-to-end. No VR without a proven device path. No new systems after Saturday 21:00. Blocker fixes only after Sunday 14:00.</div></details>
+    </section>
+  </main>
+
+  <footer><p>Unlisted operational page. Do not add credentials, tokens, private schedules, or sensitive personal information.</p></footer>
+
+  <script>
+    const storageKey = 'four-d-molkky-jam-runbook-v1';
+    const boxes = [...document.querySelectorAll('.checklist input[type="checkbox"]')];
+    const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
+    boxes.forEach((box, index) => {
+      box.checked = Boolean(saved[index]);
+      box.addEventListener('change', () => {
+        localStorage.setItem(storageKey, JSON.stringify(boxes.map(item => item.checked)));
+      });
+    });
+
+    document.querySelectorAll('.copy').forEach(button => {
+      button.addEventListener('click', async () => {
+        const command = button.previousElementSibling.textContent.trim();
+        try {
+          await navigator.clipboard.writeText(command);
+          button.textContent = 'Copied';
+          window.setTimeout(() => { button.textContent = 'Copy'; }, 1200);
+        } catch {
+          button.textContent = 'Select text';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

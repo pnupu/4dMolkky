@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>4D Mölkky — 0.11.1 Air playtest</title>
+  <style>
+    :root { color-scheme: dark; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; --ink: #ebe4d2; --muted: #afa996; --line: #393c31; --ground: #10150f; --surface: #191e17; --pine: #6e9874; --dawn: #e1a15d; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--ground); color: var(--ink); }
+    main { width: min(1100px, calc(100% - 32px)); margin: 0 auto; padding: 40px 0 64px; }
+    h1 { margin: 0 0 12px; font: 600 clamp(30px, 5vw, 48px)/1.05 Georgia, serif; letter-spacing: -.025em; }
+    h2 { margin: 36px 0 12px; font-size: 22px; }
+    .lede { max-width: 760px; margin: 0 0 28px; color: var(--muted); font-family: Avenir, Helvetica, sans-serif; font-size: 17px; line-height: 1.55; }
+    .frame { overflow: hidden; border: 1px solid var(--line); border-radius: 8px; background: #050605; }
+    video { display: block; width: 100%; height: auto; background: #050605; }
+    img { display: block; width: 100%; height: auto; }
+    dl { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px; margin: 1px 0 0; background: var(--line); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+    dl div { padding: 16px; background: var(--surface); }
+    dt { color: var(--muted); font-size: 12px; }
+    dd { margin: 7px 0 0; font-size: 14px; }
+    .note { margin: 18px 0 0; color: var(--muted); font-family: Avenir, Helvetica, sans-serif; font-size: 14px; line-height: 1.5; }
+    a { color: var(--dawn); }
+    a:focus-visible { outline: 2px solid var(--dawn); outline-offset: 4px; }
+    .video-loader { padding: 12px; }
+    .video-loader button { min-height: 44px; padding: 8px 16px; font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--muted); border-radius: 4px; cursor: pointer; }
+    .video-loader button:focus-visible { outline: 2px solid var(--dawn); outline-offset: 3px; }
+    .video-loader p { margin: 8px 0 0; font: 14px/1.5 Avenir, Helvetica, sans-serif; color: var(--muted); }
+    @media (max-width: 650px) { main { padding-top: 32px; } dl { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>4D Mölkky: First Light</h1>
+    <p class="lede">0.11.1 · Aim the shot yourself. Selecting a pin now moves only to its W slice—it no longer points the camera straight at the pin. F and the numbered roster retain dimensional navigation, while single-pin shots require your own mouse aim. No random spread, collision changes or hidden scoring adjustment.</p>
+    <p class="note"><a href="https://first-light-mac-candidat-9e9autz9cj-ilkka-lappetelainen.dev-pages.vinssi.ai">Mac candidate download, instructions and credits</a>. Read the Gatekeeper and physical-playtest limits before downloading.</p>
+    <div class="frame">
+      <video controls playsinline preload="metadata" poster="lakeside-poster.png" aria-label="Actual 0.11.1 MacBook Air gameplay with manual aiming and game audio">
+        <source data-src="aim-v0111.mp4" type="video/mp4">
+        <a href="aim-v0111.mp4">Download the gameplay video</a>.
+      </video>
+    </div>
+    <dl>
+      <div><dt>Upright base travel</dt><dd>16.7 cm → 2.4 cm</dd></div>
+      <div><dt>Fallen landing span</dt><dd>31.4 cm retained</dd></div>
+      <div><dt>Captured score</dt><dd>Pins 1 + 2 + 10 · 3 points</dd></div>
+      <div><dt>Camera</dt><dd>50° normal · 18° optional inspection</dd></div>
+    </dl>
+    <p class="note">Normal-speed recording: 24 seconds, 1280×720, 60 FPS, captured from the actual Air player with its game audio and released camera. At 6 seconds, body aids switch off; at 7 seconds they return. At 8 seconds, target selection changes W without snapping the aim. Later, the view moves to W=+2 for misses: pins remain discoverable. <a href="aim-v0111.mp4">Open or download MP4</a>. <a href="jam-v0110.mp4">Previous 0.11.0 recording</a>.</p>
+    <p class="note">After pause, restart or leaving pointer selection, release Space and T before pressing again. Six input-boundary checks verify cancellation, held-key suppression, fresh throws and fixed W during charging. These are separate from the gameplay recording; physical keyboard delivery remains a manual test.</p>
+
+    <h2>Field view and optional inspection</h2>
+    <p class="note">Normal play starts wide. V selects a closer inspection view without moving the launch position or changing aim; starting or resetting a match returns to the normal view.</p>
+    <div class="frame"><img src="gameplay-camera.png" alt="Normal 50 degree camera showing the field, lake, cabin and dock" loading="lazy"></div>
+    <p class="note">Optional 18° inspection view:</p>
+    <div class="frame"><img src="inspection-camera.png" alt="Optional closer camera for examining pins" loading="lazy"></div>
+    <h2>Selecting a pin is not a lock-on</h2>
+    <p class="note">A regression test aims deliberately away from the pack, selects pin 12 and throws. The W slice aligns, yaw and pitch remain unchanged, and the shot misses. The selected number stays highlighted; it does not grant a hit. Match tests now aim explicitly inside the test harness, rather than borrowing an aiming shortcut from the player controls. These checks do not establish a human single-pin success rate.</p>
+    <div class="frame"><img src="focused-miss.png" alt="Pin 12 selected but the off-target shot misses; all twelve pins remain standing" loading="lazy"></div>
+
+    <h2 id="comparison">Fall fix: before and after</h2>
+    <p class="note">Left: 0.10.1. Right: the 0.10.2 fall fix, retained in the current game. Comparing 17,280 rows between 0.10.4 Mono and 0.11.0 IL2CPP shows identical outcomes, score, state and axes; printed Z/W values differ by at most 0.01 mm. These close-up Air recordings are aligned at first movement, cropped and slowed to quarter speed—not the released camera or real-time speed. Upright base travel measures horizontal base displacement before 45° of tilt.</p>
+    <div class="frame">
+      <video controls playsinline preload="metadata" aria-label="Quarter-speed comparison: 0.10.1 on the left, grounded falls in 0.10.2 on the right">
+        <source data-src="before-after.mp4" type="video/mp4">
+        <a href="before-after.mp4">Download the comparison</a>.
+      </video>
+    </div>
+    <p class="note"><a href="before-after.mp4">Open or download comparison MP4</a>.</p>
+
+    <h2 id="slow-motion">Fall fix in slow motion</h2>
+    <p class="note">Quarter-speed close inspection from the 0.10.2 Air recording. The current build retains the same motion. No audio.</p>
+    <div class="frame">
+      <video controls playsinline preload="metadata" aria-label="New pin fall slowed to one quarter of normal speed">
+        <source data-src="grounded-quarter-speed.mp4" type="video/mp4">
+        <a href="grounded-quarter-speed.mp4">Download the slow-motion clip</a>.
+      </video>
+    </div>
+    <p class="note"><a href="grounded-quarter-speed.mp4">Open or download slow-motion MP4</a>.</p>
+
+    <p class="note">Current reports cover 15/60 FPS captures, varied throws, complete-match rules, input safety, and the new aim-preservation/miss checks. They are automated gameplay evidence, not human-input or Windows-playtesting claims. The <a href="lifecycle-report.json">22-run lifecycle report</a> belongs to the earlier 0.11.0 IL2CPP profile, not a repeated 0.11.1 stress run.</p>
+    <p class="note">With body aids enabled, falling pins are whole-body projections, not literal cross-sections. Blue −W and amber +W tint indicate dimensional position. G reveals literal wooden slices while keeping W silhouettes and ground shadows. Neither mode changes collision or scoring. Contact and motion remain a deterministic four-dimensional gameplay solver, not general-purpose rigid-body physics.</p>
+    <p class="note"><a href="PLAYER_GUIDE.md">Player guide</a> · <a href="capture-report.json">60 FPS capture report</a> · <a href="match-report.json">Match report</a> · <a href="throw-sweep-report.json">Throw sweep</a> · <a href="interface-report.json">Camera/menu report</a> · <a href="grounded-v0102.mp4">0.10.2 close-up recording</a> · <a href="scatter-v0101.mp4">0.10.1 recording</a> · <a href="molkky-first-light-v0100.mp4">0.10.0 archive</a></p>
+    <p class="note">Hackathon candidate, not a submitted entry. Physical keyboard/mouse and newcomer testing remain pending. Gatekeeper rejects this non-notarized candidate; normal fresh-download launch is blocked. Official theme, team/Discord details and eligibility remain unverified. No Windows, VR, multiplayer or controller-support claim.</p>
+  </main>
+  <script src="video-player.js"></script>
+</body>
+</html>

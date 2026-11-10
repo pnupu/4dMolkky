@@ -1,0 +1,51 @@
+Unity Editor version:    2022.2.2f1 (c93c5d3acf5b)
+Branch:                  2022.2/release
+Build type:              Release
+Batch mode:              YES
+macOS version:           Version 26.3 (Build 25D125)
+Darwin version:          25.3.0
+Architecture:            arm64
+Running under Rosetta:   NO
+Available memory:        16384 MB
+[Licensing::Module] Trying to connect to existing licensing client channel...
+[Licensing::IpcConnector] Successfully connected to the License Client on channel: "LicenseClient-ilkka"
+[Licensing::Client] Error: Code 10 while verifying Licensing Client signature (process Id: 28476, path: "/Applications/Unity Hub.app/Contents/Frameworks/UnityLicensingClient_V1.app/Contents/MacOS/Unity.Licensing.Client")
+[Licensing::Module] Error: LicensingClient has failed validation; ignoring
+[Licensing::Client] Handshaking with LicensingClient:
+  Version:                 1.17.4+4293ba1
+  Session Id:              2ff902b56682466f90a29ce270b49d2d
+  Correlation Id:          9d019120c85a0ddc80b6ab2016a449c3
+  External correlation Id: 1346636889302294641
+  Machine Id:              l919l4QybKvtgR5SDSKuov5RcWs=
+[Licensing::Module] Successfully connected to LicensingClient on channel: "LicenseClient-ilkka" (connect: 0.00s, validation: 0.03s, handshake: 0.34s)
+[Licensing::IpcConnector] Successfully connected to the License Notification on channel: "LicenseClient-ilkka-notifications"
+[Licensing::Module] Error: Access token is unavailable; failed to update
+[Licensing::Client] Successfully updated license
+[Licensing::Client] Successfully resolved entitlements
+[Licensing::Module] Serial number assigned to: "5773348385979-UnityPersXXXX"
+Pro License: NO
+Launching external process: /Applications/Unity/Hub/Editor/2022.2.2f1/Unity.app/Contents/Resources/PackageManager/Server/UnityPackageManager
+
+COMMAND LINE ARGUMENTS:
+/Applications/Unity/Hub/Editor/2022.2.2f1/Unity.app/Contents/MacOS/Unity
+-batchmode
+-quit
+-projectPath
+/Users/ilkka/4dmölkky/external/Engine4D
+-executeMethod
+MolkkyPrototypeSceneBuilder.BuildPrototypeScene
+-logFile
+/Users/ilkka/4dmölkky/docs/unity-build-prototype.log
+Successfully changed project path to: /Users/ilkka/4dmölkky/external/Engine4D
+/Users/ilkka/4dmölkky/external/Engine4D
+It looks like another Unity instance is running with this project open.
+
+Multiple Unity instances cannot open the same project.
+
+Project: /Users/ilkka/4dmölkky/external/Engine4D
+Fatal Error! It looks like another Unity instance is running with this project open.
+
+Multiple Unity instances cannot open the same project.
+
+Project: /Users/ilkka/4dmölkky/external/Engine4D
+[Package Manager] Server::Kill -- Server was shutdown

@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>First Light — Mac jam candidate</title>
+  <style>
+    :root { color-scheme: dark; background: #10150f; color: #ebe4d2; font-family: Avenir, Helvetica, sans-serif; }
+    * { box-sizing: border-box; }
+    main { max-width: 860px; margin: auto; padding: 36px 20px 64px; }
+    h1 { font: 600 clamp(32px, 6vw, 48px)/1.1 Georgia, serif; margin: 0 0 16px; }
+    h2 { margin-top: 32px; font-size: 23px; }
+    p, li { font-size: 17px; line-height: 1.6; }
+    li { margin-bottom: 8px; }
+    a { color: #e1a15d; text-underline-offset: 3px; }
+    a:focus-visible { outline: 2px solid #e1a15d; outline-offset: 4px; }
+    .download { display: inline-block; padding: 12px 18px; border: 1px solid #e1a15d; margin: 8px 0; }
+    .limits { border-left: 3px solid #e1a15d; padding-left: 16px; }
+    figure { margin: 24px 0; }
+    img { display: block; width: 100%; height: auto; }
+    figcaption { color: #afa996; margin-top: 8px; line-height: 1.5; }
+    code { overflow-wrap: anywhere; font-size: .9em; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>First Light</h1>
+    <p>A Finnish lakeside pin game where every throw changes the field—in four dimensions.</p>
+    <p>Knock down one pin to score its number, or several to score their count. Reach exactly 50. Pins stay where they land, including in neighbouring W slices. Follow their blue and amber shadows to plan your next throw.</p>
+    <p><a class="download" href="FirstLight4D-macOS.zip" download>Download macOS candidate · 0.11.1</a><br><a href="manifest.json">Archive SHA-256 and file manifest</a></p>
+    <p class="limits"><strong>Candidate, not a submitted jam entry.</strong> This download is not Developer ID notarized; Gatekeeper assessment rejects it on the Air. Ordinary fresh-download launch is blocked and physical newcomer testing remains unaccepted. Do not disable security to manufacture a pass. See <a href="KNOWN_ISSUES.md">verification limits</a>.</p>
+    <figure>
+      <img src="gameplay-camera.png" width="1280" height="720" alt="Actual Air gameplay: twelve pins on the lakeside field with the cabin and dock in view">
+      <figcaption>Actual MacBook Air player, normal field camera. <a href="https://4d-molkky-unity-video-te-2dywdy3wcj-ilkka-lappetelainen.dev-pages.vinssi.ai">Watch gameplay and pin-motion comparisons</a>.</figcaption>
+    </figure>
+    <h2>Download and launch</h2>
+    <ol>
+      <li>Download the ZIP, then extract it with Archive Utility.</li>
+      <li>Open the <code>macos</code> folder and launch <code>FirstLight4D.app</code>.</li>
+      <li>Choose Start solo match. No Unity editor, headset, phone or internet connection is needed to play.</li>
+    </ol>
+    <p>Validation configuration: Apple M4 MacBook Air, 16 GB RAM, macOS 26.3, Metal, keyboard/mouse, fixed 1280×720 window. This is a test configuration, not a measured minimum. Windows, VR and phone controls are not part of this package.</p>
+    <h2>Your first match</h2>
+    <ul>
+      <li>Mouse aims. Hold Space to charge; release once to throw. T makes a quick throw.</li>
+      <li>After the score appears, press T for the next turn. Fallen pins stand where they landed.</li>
+      <li>Blue shadows mean −W; amber means +W. F follows a target into its slice without auto-aim; you aim the shot yourself. Q/E moves through W, and 0 returns home.</li>
+      <li>Exactly 50 wins. Overshoot and return to 25. Three consecutive misses ends the match.</li>
+      <li>Esc pauses, H shows help, V inspects, R restarts. After pause or target selection, release Space and T before pressing again.</li>
+    </ul>
+    <p><a href="PLAYER_GUIDE.md">Full player guide</a> · <a href="JAM_README.md">Package instructions</a></p>
+    <figure>
+      <img src="inspection-camera.png" width="1280" height="720" loading="lazy" alt="Optional close inspection view of the numbered wooden pins">
+      <figcaption>V gives an optional closer inspection view without changing the throwing position.</figcaption>
+    </figure>
+    <figure>
+      <img src="first-throw-help.png" width="1280" height="720" loading="lazy" alt="First-throw help explaining aiming, charging, W slices and the exact-50 rule">
+      <figcaption>The first match opens with the controls and scoring rules visible.</figcaption>
+    </figure>
+    <h2>About this build</h2>
+    <p>0.11.1 removes automatic aiming from pin selection. Single-pin shots now depend on your mouse aim; selecting a number only changes W. The game retains its fixed-window IL2CPP profile, wider camera, persistent W shadows, ground-led falls, twelve-pin scoring and input-transition safety. There is no random spread added. The solver is deterministic game physics, not a general-purpose 4D rigid-body simulator.</p>
+    <p>Game concept and direction by Ilkka Lappeteläinen. Built with Unity and HackerPoet’s MIT-licensed Engine4D, with AI coding assistance. No live generative AI is needed to play. Mölkky is the rules reference, not a brand affiliation. <a href="CREDITS.md">Credits and provenance</a>.</p>
+    <p>The official jam theme, human team/Discord details, participation and provenance eligibility remain unverified. “First Light” is the game’s setting, not a confirmed organizer theme. No itch.io upload or entry is claimed.</p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,47 @@
+# macOS
+.DS_Store
+
+# Obsidian local state
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+
+# Unity generated folders
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+
+# Unity generated files
+*.csproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Unity crash reports
+sysinfo.txt
+
+# Rider / JetBrains
+.idea/
+
+# VS Code
+.vscode/
+
+
+# Third-party source records stay local: this repository is public
+raw/
+
+# Generated run output
+artifacts/
