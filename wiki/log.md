@@ -223,3 +223,11 @@ Three defects found and fixed during the build, each with a test or a measured c
 Evidence: 36 unit tests pass; typecheck, lint and format are clean; the production build plays a scripted 17-throw match to the end in headless Chrome with no console errors. Evidence type is fixture and headless browser. No human playtest exists. A 42-second frame-exact gameplay clip was captured without sound.
 
 Also in this change: baseline commit of the wiki, docs and ops to the public GitHub repository, with `raw/` kept local by owner decision; `AGENTS.md` assumptions, the project README and [[Engine Selection]] updated; the Unity material is marked historical in the index. Publication of the playable build and the clip to Vinssi Pages is recorded in the next entry.
+
+## [2026-11-10] publication | Playable web build and gameplay clip
+
+Published the production build of `game/` to Vinssi Pages with the production CLI 0.1.4 after the owner approved the sign-in: [play the game](https://4d-molkky-first-light-9mux3zyu6w-ilkka-lappetelainen.pages.vinssi.ai), site `01a1c4db-14f2-75d6-8d81-440613b0daf6`, 3 files, 692,078 bytes. The URL returns HTTP 200, and one scripted throw against the public URL completes in headless Chrome with no console errors.
+
+Published the gameplay clip on a new page: [watch](https://4d-molkky-web-rebuild-ga-pzv2n3ck9h-ilkka-lappetelainen.pages.vinssi.ai), site `01a1c4db-9333-74da-9af0-d5930885fcfa`. The clip is 41.6 seconds, 1280x720, H.264, 10,808,659 bytes, captured frame by frame at 30 frames per second with the game clock stepped per frame; it has no sound. The public MP4 matches the local file byte for byte (SHA-256). The existing playtest page was not updated: it is on the dev service and its staged assets are not on this machine.
+
+The production gateway answers a two-byte range request with HTTP 200 and the whole file, like the dev gateway in [[Safari Video Delivery]]. With a plain video source the clip played but a seek to 30 seconds fell back to the start. The page now uses the existing load-then-play Blob loader; in Chrome at 390x844 the clip loads, advances, seeks to 30 seconds and continues, with no page errors and no horizontal overflow. Safari and physical phones are not checked. Operations: `ops/vinssi-pages.md`.

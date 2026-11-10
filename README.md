@@ -6,6 +6,8 @@ Mölkky with four spatial dimensions, and the research wiki behind it.
 
 The game is the browser build in [`game/`](game/README.md): **4D Mölkky · First Light**. It was rebuilt from nothing in November 2026 with TypeScript and three.js.
 
+**[Play it in the browser](https://4d-molkky-first-light-9mux3zyu6w-ilkka-lappetelainen.pages.vinssi.ai)** · [Watch 42 seconds of gameplay](https://4d-molkky-web-rebuild-ga-pzv2n3ck9h-ilkka-lappetelainen.pages.vinssi.ai)
+
 - Pins and the throwing skittle are 4D rigid bodies. They fall, roll and scatter in all four directions.
 - You see one 3D slice of the field. Scroll to turn the slice through the fourth dimension. Pins outside the slice show as blue and amber ghosts, and on a 4D compass.
 - Standard Mölkky rules: twelve pins, exactly 50 to win, over 50 drops to 25, three misses in a row end your game. Solo, or two to four players on one screen.
