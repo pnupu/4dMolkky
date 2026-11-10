@@ -4,9 +4,10 @@ This wiki tracks research, source notes, design synthesis, and open questions fo
 
 ## Orientation
 
-- [[Hackathon Submission Readiness]] - current acceptance contract: one polished, tested downloadable jam game; Steam and optional features deferred.
+- [[Web Rebuild]] - current game: browser build in `game/` with real 4D rigid-body physics, slice rendering, rack, rules and evidence.
+- [[Hackathon Submission Readiness]] - September 2026 jam acceptance contract for the Unity build (historical): one polished, tested downloadable jam game; Steam and optional features deferred.
 - [[Hackathon Candidate 0.11.0]] - fixed-window IL2CPP build, 27 clean Air jobs, public package/video evidence and remaining owner gates.
-- [[Manual Aiming]] - current 0.11.1 candidate: W selection no longer auto-aims; preserved motion, eight clean Air runs and explicit regression coverage.
+- [[Manual Aiming]] - last Unity candidate, 0.11.1: W selection no longer auto-aims; preserved motion, eight clean Air runs and explicit regression coverage.
 - [[Project Overview]] - current thesis, goals, and major constraints.
 - [[Prototype Scope]] - proposed first playable prototype and what it must prove.
 
@@ -29,7 +30,7 @@ This wiki tracks research, source notes, design synthesis, and open questions fo
 
 - [[4D Mölkky Design Problem]] - what changes when Mölkky moves from 3D to 4D.
 - [[4D Pin Geometry]] - candidate shapes and readability strategy for pins.
-- [[Engine Selection]] - current engine choice, rationale, and fallback paths.
+- [[Engine Selection]] - web engine decision of 2026-11-10, its costs, the Unity and Godot alternatives, and when to reconsider.
 - [[Engine4D Technical Model]] - scene, object, mesh, shader, and physics assumptions, including runtime rotation matrices and the measured floor surface.
 - [[Mölkky Rules Model]] - how scoring, field evolution, and knockdown rules should carry into 4D.
 - [[Phone Motion Controller]] - isolated native iPhone practice spike, proposed integration contract, timed throwing, and physical-device validation limits.

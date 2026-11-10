@@ -1,42 +1,42 @@
 # 4D Mölkky
 
-Desktop game and research workspace for four-dimensional wooden-pin gameplay.
+Mölkky with four spatial dimensions, and the research wiki behind it.
 
-## Current State
+## Current state
 
-`0.11.1 · First Light` is the current Mac hackathon candidate. Selecting a pin now changes only W: no automatic camera aim. Single-pin shots require the player's mouse aim, without random spread or altered collisions. The complete solo loop, ground-led falls, wider scatter, persistent W shadows, wide lakeside camera and sound remain. Seven final Air jobs plus a focused interface check pass; the 22-run lifecycle stress test belongs to 0.11.0. VR and phone input remain future work.
+The game is the browser build in [`game/`](game/README.md): **4D Mölkky · First Light**. It was rebuilt from nothing in November 2026 with TypeScript and three.js.
 
-[Download candidate, instructions and credits](https://first-light-mac-candidat-9e9autz9cj-ilkka-lappetelainen.dev-pages.vinssi.ai) · [Actual Air gameplay](https://4d-molkky-unity-video-te-2dywdy3wcj-ilkka-lappetelainen.dev-pages.vinssi.ai).
+- Pins and the throwing skittle are 4D rigid bodies. They fall, roll and scatter in all four directions.
+- You see one 3D slice of the field. Scroll to turn the slice through the fourth dimension. Pins outside the slice show as blue and amber ghosts, and on a 4D compass.
+- Standard Mölkky rules: twelve pins, exactly 50 to win, over 50 drops to 25, three misses in a row end your game. Solo, or two to four players on one screen.
+- A Finnish lakeside at first light, drawn with procedural shaders. All sound is synthesised. The build has no image or audio files.
 
-Not yet submission-ready: Gatekeeper rejects the non-notarized download, physical newcomer/input acceptance is pending, and theme/team/eligibility plus the authenticated itch.io entry remain unresolved. The archive and its 33 file hashes are verified after public download on the Air; that is not a successful normal first launch.
+```sh
+cd game
+bun install
+bun run dev      # http://localhost:5183
+bun run test     # 36 tests: 4D maths, physics, rules, slicing
+bun run build    # static site in game/dist
+```
 
-This repo contains:
+Design, decisions and evidence: [`wiki/design/Web Rebuild.md`](wiki/design/Web%20Rebuild.md) and [`wiki/concepts/Engine Selection.md`](wiki/concepts/Engine%20Selection.md).
 
-- an LLM-maintained design/research wiki in `wiki/`,
-- immutable source records in `raw/sources/`,
-- Engine4D as a git submodule in `external/Engine4D`,
-- the Unity game under `external/Engine4D/Assets/Prototype/`,
-- player instructions in `docs/PLAYER_GUIDE.md`,
-- hackathon acceptance in `wiki/design/Hackathon Submission Readiness.md` and submission copy in `docs/JAM_SUBMISSION.md`.
+Not built yet: VR (the planned path is WebXR), and a recorded human playtest.
 
-Start with `docs/JAM_README.md` to install and play, or `wiki/index.md` for the knowledge base. The active target is a hackathon entry, not a Steam launch. Steam preparation remains a deferred reference under `ops/steam/`.
+## Repository map
 
-Current candidate evidence and unresolved release gates are in `docs/RELEASE_CANDIDATE.md`. Earlier validation history is in `docs/unity-validation-results.md`.
+- `game/` is the game: source, tests and browser check scripts.
+- `wiki/` is the LLM-maintained design and research wiki. Start at `wiki/index.md`.
+- `raw/sources/` holds immutable source records. It stays local and is not in the public repository.
+- `docs/`, `ops/` and `experiments/phone-controller/` belong to the earlier Unity prototype and its September 2026 game-jam candidate. They are kept as history.
+- `external/Engine4D` is HackerPoet's Engine4D as a git submodule. The earlier prototype was built on it. The current game does not use it.
 
-## Engine4D Submodule
+## Earlier Unity prototype
 
-After cloning this repo, initialize Engine4D with:
+`0.11.1 · First Light` was the last Unity candidate (Unity 2022.2.2f1 with Engine4D). Its evidence and limits are in `docs/RELEASE_CANDIDATE.md`, `docs/KNOWN_ISSUES.md` and the wiki pages `Manual Aiming` and `Hackathon Candidate 0.11.0` under `wiki/design/`. Its source lived as local changes inside the submodule and is not part of this repository.
+
+To fetch Engine4D for reference:
 
 ```sh
 git submodule update --init --recursive
 ```
-
-Engine4D currently targets Unity `2022.2.2f1`.
-
-## Build and validate
-
-On the configured MacBook Air, `python3 ops/unity_cycle.py run` serializes scene generation, development builds, and captured gameplay checks. `python3 -m unittest discover -s ops -p 'test_*.py'` checks the build/package helpers.
-
-`AutomatedMolkkyBuild.BuildHackathonMacOS` creates the non-development, fixed-window IL2CPP macOS build under `MOLKKY_RELEASE_OUTPUT`. See `ops/unity-mac-il2cpp.md` for the matching module and temporary old-zlib/modern-SDK compatibility guard used on the Air. Apply Unity's official CVE-2025-59489 remediation to release binaries and retest the patched output before packaging. A clean rebuild can restore the original runtime; do not skip the security gate because a previous build was patched.
-
-`python3 ops/package_release.py <candidate-root> <archive-output> --platform macos` adds controls, credits, licences, verification limits and SHA-256 manifests. Stage only the `.app`, not the adjacent IL2CPP debug/backup folder. Artifacts are generated under `artifacts/` and are not committed. The older `BuildSteamRelease` and two-platform packaging defaults remain available, but Windows execution is not verified or advertised for the jam package.

@@ -15,7 +15,12 @@ const browser = await puppeteer.launch({
   executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   headless: true,
   args: ["--enable-gpu", "--use-angle=metal", "--ignore-gpu-blocklist", "--mute-audio"],
-  defaultViewport: { width: 1440, height: 900, deviceScaleFactor: 1 },
+  defaultViewport: {
+    width: Number(process.env.SHOT_W ?? 1440),
+    height: Number(process.env.SHOT_H ?? 900),
+    deviceScaleFactor: Number(process.env.SHOT_DPR ?? 1),
+    hasTouch: process.env.SHOT_TOUCH === "1",
+  },
 });
 const page = await browser.newPage();
 const problems: string[] = [];
@@ -52,7 +57,10 @@ if (scenario === "menu") {
 } else {
   await page.evaluate(() => window.molkky?.start(["You"]));
   await wait(1800);
-  await page.mouse.move(720, 520);
+  await page.mouse.move(
+    Number(process.env.SHOT_W ?? 1440) / 2,
+    Number(process.env.SHOT_H ?? 900) * 0.58,
+  );
   await wait(600);
   await shot("aim");
   if (scenario === "close") {

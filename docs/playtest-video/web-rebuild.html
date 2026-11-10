@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>4D Mölkky · First Light: web rebuild gameplay</title>
+  <style>
+    :root { --ink: #f6f1e7; --soft: rgba(246, 241, 231, 0.72); --wood: #e9c58c; --line: rgba(246, 241, 231, 0.14); }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #0d1016; color: var(--ink); font: 16px/1.5 "Avenir Next", "Segoe UI", "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+    main { max-width: 960px; margin: 0 auto; padding: 32px 16px 64px; display: grid; gap: 24px; }
+    h1 { margin: 0; font-size: 34px; line-height: 1.1; text-wrap: balance; }
+    h1 em { font-style: normal; color: var(--wood); }
+    p { margin: 0; color: var(--soft); text-wrap: pretty; max-width: 68ch; }
+    video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; border-radius: 16px; background: #000; box-shadow: 0 0 0 1px var(--line); }
+    a.play { display: inline-flex; align-items: center; height: 48px; padding: 0 24px; border-radius: 10px; background: linear-gradient(180deg, #f1d39c, #dcb070); color: #23190b; font-weight: 600; text-decoration: none; }
+    a.play:focus-visible { outline: 2px solid var(--wood); outline-offset: 2px; }
+    dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; color: var(--soft); font-size: 14px; }
+    dt { color: var(--ink); font-weight: 600; }
+    dd { margin: 0; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>4D Mölkky <em>First Light</em></h1>
+    <p>Gameplay of the November 2026 web rebuild: the menu, a turn of the view through the fourth dimension, and three throws with real 4D rigid-body physics.</p>
+    <video controls playsinline preload="metadata" poster="poster.jpg" aria-label="Gameplay of the 4D Mölkky web rebuild, without sound">
+      <source src="web-rebuild.mp4" type="video/mp4">
+    </video>
+    <!--PLAY-LINK-->
+    <dl>
+      <dt>Capture</dt><dd>Headless Chrome on the MacBook Air (Apple M4), frame by frame at 30 frames per second. The game clock is stepped once per frame, so the timing is exact.</dd>
+      <dt>Sound</dt><dd>None. Headless capture does not record audio. The game has synthesised sound.</dd>
+      <dt>Input</dt><dd>Scripted pointer input through the game's normal controls: hold to charge, release to throw.</dd>
+    </dl>
+  </main>
+</body>
+</html>

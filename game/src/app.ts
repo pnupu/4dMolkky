@@ -35,6 +35,22 @@ const ZOOM_FOV = 11;
 const COLOR_BELOW_CSS = "#7cc0ff";
 const COLOR_ABOVE_CSS = "#ffc06a";
 
+// Storage can be unavailable (private windows, embedded frames): the game works without it.
+const readBest = (): number | null => {
+  try {
+    return Number(window.localStorage.getItem(BEST_KEY)) || null;
+  } catch {
+    return null;
+  }
+};
+const writeBest = (throws: number): void => {
+  try {
+    window.localStorage.setItem(BEST_KEY, String(throws));
+  } catch {
+    // Nothing to do: the best score is a convenience.
+  }
+};
+
 interface Pose {
   pos: Vec4;
   rot: Mat4;
@@ -63,6 +79,8 @@ export interface DebugApi {
   speed: number;
   /** Fix the camera for a screenshot: position, target, field of view. Null frees it. */
   view: (view: [number, number, number, number, number, number, number] | null) => void;
+  /** Stop the real-time clock and draw one frame `dt` seconds later, for video capture. */
+  advance: (dt: number) => void;
 }
 
 export class App {
@@ -102,6 +120,7 @@ export class App {
   private style: ThrowStyle = "wide";
   private power = 0;
   private zoom = false;
+  private touchTurn = 0;
   private labels = true;
   private readonly keys = new Set<string>();
   private readonly pointer = new THREE.Vector2(0, -0.2);
@@ -114,6 +133,8 @@ export class App {
   private outcome: ThrowOutcome | null = null;
   private hinted = false;
   debugSpeed = 1;
+  /** When set, time only moves through `advance`: frame-exact video capture. */
+  private manualClock = false;
 
   constructor(private readonly canvas: HTMLCanvasElement) {
     this.renderer = new THREE.WebGLRenderer({
@@ -151,7 +172,11 @@ export class App {
       menu: () => this.toMenu(),
       restart: () => this.startMatch(this.names),
       cycleStyle: () => this.cycleStyle(),
+      cycleLoft: () => this.cycleLoft(),
       turnTo: (x, w) => this.turnTo(x, w),
+      turnHold: (direction) => {
+        this.touchTurn = direction;
+      },
     });
     canvas.after(this.labelLayer.canvas);
     this.hud.showMenu(true);
@@ -187,8 +212,11 @@ export class App {
     this.setPhase("aim");
     if (!this.hinted) {
       this.hinted = true;
+      const turn = window.matchMedia("(pointer: coarse)").matches
+        ? "Hold a round button to turn your view through it"
+        : "Scroll to turn your view through it";
       this.hud.showHint(
-        "Half of the rack is hidden in the fourth dimension. Scroll to turn your view through it, then hold and release to throw.",
+        `Half of the rack is hidden in the fourth dimension. ${turn}, then hold and release to throw.`,
         9,
       );
     }
@@ -291,13 +319,13 @@ export class App {
     if (this.match.over) {
       let best: number | null = null;
       if (this.match.solo) {
-        const stored = Number(window.localStorage.getItem(BEST_KEY)) || null;
+        const stored = readBest();
         best = stored;
         if (this.match.winner !== null) {
           const throws = this.match.players[0].throws.length;
           if (stored === null || throws < stored) {
             best = throws;
-            window.localStorage.setItem(BEST_KEY, String(throws));
+            writeBest(throws);
           }
         }
       }
@@ -313,6 +341,16 @@ export class App {
   private cycleStyle(): void {
     this.style = STYLES[(STYLES.indexOf(this.style) + 1) % STYLES.length];
     this.hud.setThrowSetup(this.style, (this.loft * 180) / Math.PI);
+    this.sound.tick();
+  }
+
+  /** Step the loft through a few useful angles: flat, normal, high, lob. */
+  private cycleLoft(): void {
+    const steps = [10, 17, 28, 40];
+    const degrees = (this.loft * 180) / Math.PI;
+    const next = steps.find((s) => s > degrees + 0.5) ?? steps[0];
+    this.loft = (next * Math.PI) / 180;
+    this.hud.setThrowSetup(this.style, next);
     this.sound.tick();
   }
 
@@ -388,7 +426,7 @@ export class App {
 
   private updateAim(dt: number): void {
     const fine = this.keys.has("Shift") ? 0.25 : 1;
-    let turn = 0;
+    let turn = this.touchTurn;
     if (this.keys.has("q") || this.keys.has("ArrowLeft")) turn -= 1;
     if (this.keys.has("e") || this.keys.has("ArrowRight")) turn += 1;
     this.sliceTarget += turn * 0.9 * fine * dt;
@@ -418,10 +456,17 @@ export class App {
   private frame(now: number): void {
     const dt = Math.min((now - this.lastFrame) / 1000, 0.1);
     this.lastFrame = now;
+    if (this.manualClock) return;
     this.fps += (1 / Math.max(dt, 1e-4) - this.fps) * 0.05;
     this.adaptResolution(dt);
+    this.tick(dt);
+  }
+
+  /** Advance the game by `dt` seconds and draw one frame. */
+  private tick(dt: number): void {
     this.clock += dt;
     if (!this.paused) this.update(dt);
+    this.hud.tick(dt);
     this.updateCamera(dt);
     this.environment.update(this.slice, this.clock);
     this.cabin.update(this.slice);
@@ -662,6 +707,10 @@ export class App {
       },
       view: (view) => {
         app.fixedView = view;
+      },
+      advance: (dt) => {
+        app.manualClock = true;
+        app.tick(dt);
       },
       get speed() {
         return app.debugSpeed;

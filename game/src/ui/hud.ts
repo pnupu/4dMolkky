@@ -33,8 +33,11 @@ export interface HudEvents {
   menu: () => void;
   restart: () => void;
   cycleStyle: () => void;
+  cycleLoft: () => void;
   /** Turn the slice so that ground point (x, w) lies in it. */
   turnTo: (x: number, w: number) => void;
+  /** Touch buttons: turn the slice while held. -1, 0 or 1. */
+  turnHold: (direction: number) => void;
 }
 
 export const STYLE_NAMES: Record<ThrowStyle, string> = {
@@ -58,18 +61,20 @@ export class Hud {
   private readonly powerFill = el("div", "power-fill");
   private readonly powerValue = el("span", "power-value", "0%");
   private readonly styleChip = el("button", "chip");
-  private readonly loftChip = el("span", "chip");
+  private readonly loftChip = el("button", "chip");
   private readonly toast = el("div", "toast panel");
   private readonly turn = el("div", "turn panel");
   private readonly hint = el("div", "hint panel");
   private readonly menu = el("div", "overlay menu");
   private readonly pause = el("div", "overlay");
   private readonly over = el("div", "overlay");
+  private readonly turners = el("div");
   private dots: CompassDot[] = [];
   private compassScale = 1;
   private playerCount = 1;
-  private toastTimer = 0;
-  private hintTimer = 0;
+  /** Seconds of game time left for the toast and the hint. */
+  private toastLeft = 0;
+  private hintLeft = 0;
 
   constructor(private readonly events: HudEvents) {
     this.root = document.getElementById("hud")!;
@@ -78,6 +83,7 @@ export class Hud {
     this.buildMenu();
     this.buildPause();
     this.root.append(this.scores, this.turn, this.hint, this.toast, this.throwbar);
+    this.buildTurners();
     this.root.append(this.menu, this.pause, this.over);
     this.setPlaying(false);
   }
@@ -127,6 +133,10 @@ export class Hud {
     this.styleChip.type = "button";
     this.styleChip.addEventListener("pointerdown", (event) => event.stopPropagation());
     this.styleChip.addEventListener("click", () => this.events.cycleStyle());
+    this.loftChip.type = "button";
+    this.loftChip.title = "How high the throw goes";
+    this.loftChip.addEventListener("pointerdown", (event) => event.stopPropagation());
+    this.loftChip.addEventListener("click", () => this.events.cycleLoft());
     const hints = el("div", "chips left");
     hints.append(
       el("span", "chip", "<kbd>Hold</kbd> charge, release to throw"),
@@ -135,6 +145,29 @@ export class Hud {
     const setup = el("div", "chips right");
     setup.append(this.loftChip, this.styleChip);
     this.throwbar.append(hints, power, setup);
+  }
+
+  /** Two buttons that turn the slice, for screens without a scroll wheel. */
+  private buildTurners(): void {
+    this.turners.className = "turners";
+    for (const [direction, label, glyph] of [
+      [-1, "Turn the view one way through the fourth dimension", "\u21ba"],
+      [1, "Turn the view the other way through the fourth dimension", "\u21bb"],
+    ] as const) {
+      const button = el("button", "turner panel", glyph);
+      button.type = "button";
+      button.setAttribute("aria-label", label);
+      const stop = (): void => this.events.turnHold(0);
+      button.addEventListener("pointerdown", (event) => {
+        event.stopPropagation();
+        button.setPointerCapture(event.pointerId);
+        this.events.turnHold(direction);
+      });
+      button.addEventListener("pointerup", stop);
+      button.addEventListener("pointercancel", stop);
+      this.turners.append(button);
+    }
+    this.root.append(this.turners);
   }
 
   private buildMenu(): void {
@@ -240,6 +273,7 @@ export class Hud {
     this.scores.style.display = display;
     this.turn.style.display = display;
     this.throwbar.style.display = playing ? "grid" : "none";
+    this.turners.style.visibility = playing ? "visible" : "hidden";
     (this.compassCanvas.parentElement as HTMLElement).style.display = playing ? "flex" : "none";
     if (!playing) {
       this.toast.classList.remove("show");
@@ -282,7 +316,9 @@ export class Hud {
         el(
           "span",
           "",
-          player.eliminated ? "Out" : `${player.throws.length} throws · needs ${need}`,
+          player.eliminated
+            ? "Out"
+            : `<span class="wide-only">${player.throws.length} throws · </span>needs ${need}`,
         ),
         misses,
       );
@@ -305,15 +341,25 @@ export class Hud {
     if (outcome.bust) text += ` Over ${TARGET_SCORE}: back to 25.`;
     this.toast.innerHTML = `<div class="toast-points${points === 0 ? " miss" : ""}">${points === 0 ? "Miss" : `+${points}`}</div><div class="toast-text">${escapeHtml(text)}</div>`;
     this.toast.classList.add("show");
-    window.clearTimeout(this.toastTimer);
-    this.toastTimer = window.setTimeout(() => this.toast.classList.remove("show"), 2400);
+    this.toastLeft = 2.4;
   }
 
   showHint(text: string, seconds = 6): void {
     this.hint.textContent = text;
     this.hint.classList.add("show");
-    window.clearTimeout(this.hintTimer);
-    this.hintTimer = window.setTimeout(() => this.hint.classList.remove("show"), seconds * 1000);
+    this.hintLeft = seconds;
+  }
+
+  /** Count down the toast and the hint. Call every frame with the game time step. */
+  tick(dt: number): void {
+    if (this.toastLeft > 0) {
+      this.toastLeft -= dt;
+      if (this.toastLeft <= 0) this.toast.classList.remove("show");
+    }
+    if (this.hintLeft > 0) {
+      this.hintLeft -= dt;
+      if (this.hintLeft <= 0) this.hint.classList.remove("show");
+    }
   }
 
   showGameOver(match: Match, best: number | null): void {

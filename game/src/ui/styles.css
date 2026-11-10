@@ -676,14 +676,71 @@ button.chip:focus-visible {
   }
 }
 
+/* --- Touch: buttons to turn the slice ------------------------------------- */
+
+.turners {
+  position: absolute;
+  left: max(var(--s4), env(safe-area-inset-left));
+  right: max(var(--s4), env(safe-area-inset-right));
+  top: 50%;
+  display: none;
+  justify-content: space-between;
+  pointer-events: none;
+}
+
+.turner {
+  width: 52px;
+  height: 52px;
+  border: 0;
+  border-radius: 50%;
+  color: var(--ink);
+  font: inherit;
+  font-size: 24px;
+  cursor: pointer;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.turner:active {
+  transform: scale(0.94);
+}
+
+@media (pointer: coarse) {
+  .turners {
+    display: flex;
+  }
+}
+
 @media (max-width: 720px) {
   .scores,
   .compass {
-    width: 168px;
+    width: 148px;
+  }
+  .score {
+    padding: var(--s2) var(--s3);
+  }
+  .score-value {
+    font-size: 22px;
+  }
+  .wide-only,
+  .compass-key,
+  .turn {
+    display: none;
+  }
+  .compass {
+    padding: var(--s2);
   }
   .compass canvas {
-    width: 144px;
-    height: 144px;
+    width: 132px;
+    height: 132px;
+  }
+  .hint {
+    top: calc(max(var(--s4), env(safe-area-inset-top)) + 196px);
+    width: calc(100vw - 2 * var(--s4));
+  }
+  .segmented button {
+    font-size: 13px;
+    white-space: nowrap;
   }
   .title {
     font-size: 30px;
