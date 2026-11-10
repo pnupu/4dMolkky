@@ -17,8 +17,11 @@ export const pinShape = (): Shape => {
   return pin;
 };
 
-/** The throwing skittle: 22.5 cm long, 5.9 cm across, flat ends. */
+/**
+ * The throwing skittle: 22.5 cm long, 5.9 cm across, flat ends. It is weighted well
+ * above a pin (0.26 kg), so a hit carries through the rack instead of stopping dead.
+ */
 export const skittleShape = (): Shape => {
-  skittle ??= new Shape({ radius: PIN_RADIUS, height: SKITTLE_LENGTH, bevel: 0, mass: 0.42 });
+  skittle ??= new Shape({ radius: PIN_RADIUS, height: SKITTLE_LENGTH, bevel: 0, mass: 0.85 });
   return skittle;
 };

@@ -36,6 +36,8 @@ export class Match {
   readonly players: Player[];
   current = 0;
   winner: number | null = null;
+  /** True when the winner won because every other player was eliminated. */
+  wonByElimination = false;
   over = false;
 
   constructor(names: string[]) {
@@ -67,7 +69,12 @@ export class Match {
     let bust = false;
     if (points === 0) {
       player.misses += 1;
-      if (player.misses >= MAX_MISSES) player.eliminated = true;
+      if (player.misses >= MAX_MISSES) {
+        player.eliminated = true;
+        // Tournament rule: an eliminated side's score becomes zero. A solo player keeps
+        // the score, which is the result of that game.
+        if (!this.solo) player.score = 0;
+      }
     } else {
       player.misses = 0;
       player.score += points;
@@ -84,8 +91,10 @@ export class Match {
     } else if (active.length === 0) {
       this.over = true;
     } else if (!this.solo && active.length === 1) {
-      // The last side standing wins the set.
+      // The last side standing wins the set and receives the full 50 (tournament rule).
       this.winner = this.players.indexOf(active[0]);
+      this.wonByElimination = true;
+      active[0].score = TARGET_SCORE;
       this.over = true;
     } else {
       do {

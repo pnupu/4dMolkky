@@ -38,13 +38,14 @@ All items below are project decisions (**Inference**), not sourced Mölkky or En
 
 - Bodies carry a 4x4 rotation matrix and a bivector angular velocity (6 components). Inertia acts per rotation plane in the principal frame; mass properties come from numerical integration of the cut shape.
 - Contacts: rim points tested against the other body's signed distance, an exact side-to-side test on the axis segments, and analytic deepest rim points against the ground. A rim uses the surface of the other body that its centre faces; this fixed upright neighbours sinking into each other.
-- Solver: sequential impulses, 8 substeps per 60 Hz step, 3D Coulomb friction in the contact's tangent space, contacts one step early for fast bodies.
+- Solver: sequential impulses, 8 substeps per 60 Hz step, 3D Coulomb friction in the contact's tangent space, contacts one step early for fast bodies. Overlap is removed directly in position, never through velocity, so resolving a contact cannot throw a body up.
+- Feel, set by the owner on 2026-11-10: the skittle is 0.85 kg against 0.26 kg for a pin, and the ground returns 4 percent of an impact (wood on wood: 42 percent).
 - A lying spherinder rolls like a ball in two ground directions. Rolling resistance stands in for sand and gravel.
 - The simulation is deterministic at a fixed step. The same throw gives the same result.
 
 ### Rules
 
-- Scoring, bust to 25, three-miss elimination, last-side-standing and turn order follow [[Mölkky Rules Model]].
+- Scoring, bust to 25, three-miss elimination, last-side-standing and turn order follow [[Mölkky Rules Model]]. With two or more players, an eliminated player's score becomes 0 and the last player standing receives 50 (tournament rule in [[Mölkky Rules]]). A solo player keeps the score when three misses end the game: a project decision.
 - Fallen means settled, axis within about 15 degrees of flat, and centre low. A pin resting on another pin or on the skittle is steeper or higher and does not count ([[IMO Tournament Rules]] interpretation).
 - Re-standing keeps the point where the base met the ground, nearest the throwing line first, with no overlap. W position is preserved.
 
@@ -57,7 +58,7 @@ All items below are project decisions (**Inference**), not sourced Mölkky or En
 
 ## Evidence
 
-- 36 unit tests: 4D maths, shape, free motion (angular momentum and energy), single-pin stability and falls along X, Z and W, collisions, determinism, rules, rack, re-standing, a scripted full match, and slice geometry (`r² = R² − d²`, ball cross-section, winding).
+- 41 unit tests: 4D maths, shape, free motion (angular momentum and energy), single-pin stability and falls along X, Z and W, collisions, determinism, rules, rack, re-standing, a scripted full match, and slice geometry (`r² = R² − d²`, ball cross-section, winding).
 - Headless Chrome on the Air (Apple M4, Metal): a scripted match runs to the end with no console errors. Frame time at 2160x1350: 11 ms median while aiming, 15 ms during a throw. Physics: about 1 ms per step on average, 5 to 8 ms at the worst impact frame.
 - Evidence type: fixture and headless-browser runs. No human playtest record exists yet.
 

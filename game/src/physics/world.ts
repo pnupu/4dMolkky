@@ -263,6 +263,7 @@ export class World {
     for (const c of this.contacts) this.prepare(c, h);
     for (let it = 0; it < this.iterations; it++) for (const c of this.contacts) this.solve(c);
     this.recordImpacts();
+    this.separate();
 
     for (const b of this.bodies) {
       if (b.asleep) continue;
@@ -415,15 +416,19 @@ export class World {
         const local = rimSupport(rim, mulTV(owner.rot, scale(grad, -1)));
         if (!local) break;
         const p = owner.toWorld(local);
-        if (other.sdfWorld(p, grad, face) >= reach) continue;
-        if (shape.faceDistance < bestD) {
-          bestD = shape.faceDistance;
+        const distance = other.sdfWorld(p, grad, face);
+        if (distance >= reach) continue;
+        // A point that is still outside is a gap, whatever the chosen surface says.
+        const d = distance >= 0 ? distance : shape.faceDistance;
+        if (d < bestD) {
+          bestD = d;
           best = p;
         }
       }
       if (best) {
         other.sdfWorld(best, grad, face);
-        emit(best);
+        const normal: Vec4 = sign === 1 ? [grad[0], grad[1], grad[2], grad[3]] : scale(grad, -1);
+        this.push(a, b, best, normal, -bestD);
       }
 
       // Fixed samples catch flat and crossing contacts. Keep the three deepest.
@@ -464,10 +469,11 @@ export class World {
       c.mass.push(k > 0 ? 1 / k : 0);
     }
     const vn = dot(this.relativeVelocity(c), n);
-    const restitution = b ? 0.42 : 0.22;
-    let bias = 0;
-    if (c.depth > SLOP) bias = Math.min((0.2 * (c.depth - SLOP)) / h, 1.5);
-    else if (c.depth < 0) bias = c.depth / h; // speculative: may close the gap, no more
+    // Wood on wood rings and rebounds. Sand and gravel swallow almost all of an impact.
+    const restitution = b ? 0.42 : 0.04;
+    // Overlap is removed by `separate`, not here: pushing it out through velocity
+    // would throw bodies up off the ground.
+    let bias = c.depth < 0 ? c.depth / h : 0; // a gap may close, no more
     if (vn < -0.6) bias = Math.max(bias, -restitution * vn);
     c.bias = bias;
   }
@@ -517,6 +523,34 @@ export class World {
         if (delta !== 0) this.applyImpulse(c, j + 1, c.tangents[j], delta);
       }
     }
+  }
+
+  /**
+   * Move overlapping bodies apart a little, directly in position. Each body moves by
+   * the average of what its contacts ask for, shared by mass. No velocity is added, so
+   * resolving an overlap never makes anything bounce.
+   */
+  private separate(): void {
+    const moves = new Map<Body, { sum: Vec4; count: number }>();
+    const ask = (body: Body, direction: Vec4, amount: number): void => {
+      let move = moves.get(body);
+      if (!move) {
+        move = { sum: [0, 0, 0, 0], count: 0 };
+        moves.set(body, move);
+      }
+      move.sum = addScaled(move.sum, direction, amount);
+      move.count++;
+    };
+    for (const c of this.contacts) {
+      if (c.depth <= SLOP) continue;
+      const push = Math.min(0.3 * (c.depth - SLOP), 0.003);
+      const wa = c.a.asleep ? 0 : c.a.shape.invMass;
+      const wb = c.b && !c.b.asleep ? c.b.shape.invMass : 0;
+      if (wa + wb === 0) continue;
+      if (wa > 0) ask(c.a, c.normal, (push * wa) / (wa + wb));
+      if (c.b && wb > 0) ask(c.b, c.normal, (-push * wb) / (wa + wb));
+    }
+    for (const [body, move] of moves) body.pos = addScaled(body.pos, move.sum, 1 / move.count);
   }
 
   private recordImpacts(): void {

@@ -380,7 +380,9 @@ export class Hud {
           "subtitle",
           match.solo
             ? `You finished in ${throws} throws.${best !== null && best === throws ? " That is your best game." : best !== null ? ` Your best is ${best}.` : ""}`
-            : `${escapeHtml(winner.name)} reached exactly 50 in ${throws} throws.`,
+            : match.wonByElimination
+              ? `${escapeHtml(winner.name)} is the last player standing and takes the full 50.`
+              : `${escapeHtml(winner.name)} reached exactly 50 in ${throws} throws.`,
         ),
       );
     } else {

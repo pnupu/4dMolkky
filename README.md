@@ -17,7 +17,7 @@ The game is the browser build in [`game/`](game/README.md): **4D Mölkky · Firs
 cd game
 bun install
 bun run dev      # http://localhost:5183
-bun run test     # 36 tests: 4D maths, physics, rules, slicing
+bun run test     # 41 tests: 4D maths, physics, rules, slicing, feel
 bun run build    # static site in game/dist
 ```
 

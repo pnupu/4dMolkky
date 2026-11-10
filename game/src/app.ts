@@ -201,7 +201,8 @@ export class App {
     this.match = new Match(names);
     this.field.rack();
     this.removeSkittleVisual();
-    this.sliceTarget = 0;
+    // The menu turns the slice slowly: start the match at angle 0 without a whip back.
+    this.slice = this.sliceTarget = 0;
     this.yaw = 0;
     this.paused = false;
     this.hud.showMenu(false);

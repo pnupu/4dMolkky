@@ -315,5 +315,8 @@ export class PinVisual {
     this.solid.geometry.dispose();
     this.ghost.geometry.dispose();
     this.ring.geometry.dispose();
+    (this.solidMesh.material as THREE.Material).dispose();
+    this.ghostMaterial.dispose();
+    (this.ring.material as THREE.Material).dispose();
   }
 }

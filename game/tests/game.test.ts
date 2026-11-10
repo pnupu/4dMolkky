@@ -68,14 +68,40 @@ describe("scoring", () => {
     expect(match.current).toBe(2);
   });
 
-  test("the last player left wins", () => {
+  test("the last player left wins with 50, and the eliminated player has 0", () => {
     const match = new Match(["Aino", "Eero"]);
+    match.applyThrow([2]); // Aino 2
+    match.applyThrow([7]); // Eero 7
     for (let i = 0; i < 3; i++) {
       match.applyThrow([2]);
       if (!match.over) match.applyThrow([]);
     }
     expect(match.over).toBe(true);
     expect(match.winner).toBe(0);
+    expect(match.wonByElimination).toBe(true);
+    expect(match.players[0].score).toBe(50);
+    expect(match.players[1].eliminated).toBe(true);
+    expect(match.players[1].score).toBe(0);
+  });
+
+  test("a win on points is not a win by elimination", () => {
+    const match = new Match(["Aino", "Eero"]);
+    for (const pin of [12, 12, 12, 12, 2]) {
+      match.applyThrow([pin]);
+      if (!match.over) match.applyThrow([1]);
+    }
+    expect(match.winner).toBe(0);
+    expect(match.wonByElimination).toBe(false);
+    expect(match.players[0].score).toBe(50);
+  });
+
+  test("a solo player keeps the score when three misses end the game", () => {
+    const match = new Match(["Aino"]);
+    match.applyThrow([9]);
+    for (let i = 0; i < 3; i++) match.applyThrow([]);
+    expect(match.over).toBe(true);
+    expect(match.winner).toBeNull();
+    expect(match.players[0].score).toBe(9);
   });
 });
 
