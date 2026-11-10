@@ -53,7 +53,7 @@ bun run fmt:check
 bun run test
 ```
 
-Browser checks need the dev server and Google Chrome:
+Browser checks need the dev server and Google Chrome. Set `CHROME_PATH` if Chrome is not in the macOS default place:
 
 ```sh
 bun scripts/shot.ts http://127.0.0.1:5183/ <output-dir> match   # plays a whole match, saves screenshots

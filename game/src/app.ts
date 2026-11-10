@@ -112,6 +112,9 @@ export class App {
   private pixelRatio = 1;
   private slowTime = 0;
   private fastTime = 0;
+  private resolutionCeiling = Math.min(window.devicePixelRatio || 1, 2);
+  private resolutionLocked = false;
+  private trial: { from: number; fps: number; time: number } | null = null;
 
   private slice = 0;
   private sliceTarget = 0;
@@ -390,7 +393,8 @@ export class App {
     window.addEventListener(
       "wheel",
       (event) => {
-        if (this.phase === "menu" || this.paused) return;
+        // Menus and the result card scroll normally.
+        if (this.phase === "menu" || this.phase === "over" || this.paused) return;
         event.preventDefault();
         const unit = event.deltaMode === 1 ? 16 : 1;
         const delta = THREE.MathUtils.clamp((event.deltaY + event.deltaX) * unit, -120, 120);
@@ -638,21 +642,40 @@ export class App {
     this.hud.drawCompass(dots, degrees);
   }
 
-  /** Lower the render resolution when frames run long, and raise it again when they do not. */
+  /**
+   * Lower the render resolution when frames run long, and raise it again when they do
+   * not. A step down is a trial: if the frame rate does not rise, the limit is not the
+   * GPU (a 30 Hz display, a browser energy saver), so the step is undone and the
+   * resolution is left alone. A resolution that was too slow is not tried again.
+   */
   private adaptResolution(dt: number): void {
-    const max = Math.min(window.devicePixelRatio || 1, 2);
+    if (this.resolutionLocked) return;
+    const set = (ratio: number): void => {
+      this.pixelRatio = ratio;
+      this.slowTime = this.fastTime = 0;
+      this.renderer.setPixelRatio(ratio);
+      this.resize();
+    };
+    if (this.trial) {
+      this.trial.time += dt;
+      if (this.trial.time < 2.5) return;
+      if (this.fps < this.trial.fps * 1.15) {
+        set(this.trial.from);
+        this.resolutionLocked = true;
+      } else {
+        this.resolutionCeiling = this.pixelRatio;
+      }
+      this.trial = null;
+      return;
+    }
     this.slowTime = this.fps < 48 ? this.slowTime + dt : 0;
     this.fastTime = this.fps > 58 ? this.fastTime + dt : 0;
-    let next = this.pixelRatio;
-    if (this.slowTime > 1.5 && this.pixelRatio > 0.75)
-      next = Math.max(0.75, this.pixelRatio - 0.25);
-    else if (this.fastTime > 6 && this.pixelRatio < max)
-      next = Math.min(max, this.pixelRatio + 0.25);
-    if (next === this.pixelRatio) return;
-    this.pixelRatio = next;
-    this.slowTime = this.fastTime = 0;
-    this.renderer.setPixelRatio(next);
-    this.resize();
+    if (this.slowTime > 1.5 && this.pixelRatio > 0.75) {
+      this.trial = { from: this.pixelRatio, fps: this.fps, time: 0 };
+      set(Math.max(0.75, this.pixelRatio - 0.25));
+    } else if (this.fastTime > 6 && this.pixelRatio < this.resolutionCeiling) {
+      set(Math.min(this.resolutionCeiling, this.pixelRatio + 0.25));
+    }
   }
 
   private resize(): void {

@@ -6,7 +6,8 @@ import puppeteer from "puppeteer-core";
 
 const url = process.argv[2] ?? "http://127.0.0.1:5183/";
 const browser = await puppeteer.launch({
-  executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  executablePath:
+    process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   headless: true,
   args: [
     "--enable-gpu",

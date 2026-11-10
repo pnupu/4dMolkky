@@ -132,11 +132,19 @@ export class Hud {
     power.append(el("span", "label", "Power"), track, this.powerValue);
     this.styleChip.type = "button";
     this.styleChip.addEventListener("pointerdown", (event) => event.stopPropagation());
-    this.styleChip.addEventListener("click", () => this.events.cycleStyle());
+    // Give focus back after a click: a focused button would also fire when Space,
+    // the charge key, is released.
+    this.styleChip.addEventListener("click", () => {
+      this.styleChip.blur();
+      this.events.cycleStyle();
+    });
     this.loftChip.type = "button";
     this.loftChip.title = "How high the throw goes";
     this.loftChip.addEventListener("pointerdown", (event) => event.stopPropagation());
-    this.loftChip.addEventListener("click", () => this.events.cycleLoft());
+    this.loftChip.addEventListener("click", () => {
+      this.loftChip.blur();
+      this.events.cycleLoft();
+    });
     const hints = el("div", "chips left");
     hints.append(
       el("span", "chip", "<kbd>Hold</kbd> charge, release to throw"),

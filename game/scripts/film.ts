@@ -17,7 +17,8 @@ const WIDTH = 1280;
 const HEIGHT = 720;
 
 const browser = await puppeteer.launch({
-  executablePath: "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  executablePath:
+    process.env.CHROME_PATH ?? "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
   headless: true,
   args: ["--enable-gpu", "--use-angle=metal", "--ignore-gpu-blocklist", "--mute-audio"],
   defaultViewport: { width: WIDTH, height: HEIGHT, deviceScaleFactor: 1.5 },
