@@ -1,5 +1,36 @@
 # Vinssi Pages Operations
 
+## Web game (current)
+
+The November 2026 web rebuild is published with the production CLI (`npx -y vinssi@0.1.4`, see the `vinssi-pages` skill). Do not set `VINSSI_API_URL` for these two sites.
+
+### Playable build
+
+- Source: `game/dist` after `bun run build` in `game/`.
+- Site ID: `01a1c4db-14f2-75d6-8d81-440613b0daf6`
+- URL: https://4d-molkky-first-light-9mux3zyu6w-ilkka-lappetelainen.pages.vinssi.ai
+
+```sh
+cd game && bun run build
+npx -y vinssi@0.1.4 pages publish "$PWD/dist" --site 01a1c4db-14f2-75d6-8d81-440613b0daf6 --json
+```
+
+After publication, require HTTP 200, then play one throw against the public URL: `bun scripts/shot.ts <url>/ <output-dir> throw` must end with `no console errors`.
+
+### Gameplay video page
+
+- HTML source: `docs/playtest-video/web-rebuild.html`, staged as `index.html` with `web-rebuild.mp4`, `poster.jpg` and `docs/playtest-video/video-player.js`.
+- Site ID: `01a1c4db-9333-74da-9af0-d5930885fcfa`
+- URL: https://4d-molkky-web-rebuild-ga-pzv2n3ck9h-ilkka-lappetelainen.pages.vinssi.ai
+- Capture: `bun scripts/film.ts <url> <frames-dir>` in `game/`, then `ffmpeg -framerate 30 -i <frames-dir>/f%05d.jpg -vf scale=1280:720 -c:v libx264 -crf 25 -pix_fmt yuv420p -movflags +faststart web-rebuild.mp4`. The clip has no sound.
+- The production gateway also answers `Range: bytes=0-1` with HTTP 200 and the whole file (checked 2026-11-10). A plain `<video src>` plays but cannot seek. The page therefore uses the same load-then-play Blob loader as the older page.
+
+Require HTTP 200 for the page and each asset, matching bytes for the MP4, and a browser check that the clip loads, advances and seeks.
+
+## Unity prototype pages (historical, dev service)
+
+The sections below describe the September 2026 Unity candidate. Those sites are on `dev.vinssi.ai`, and their staged assets under `artifacts/` are not on the MacBook Air.
+
 - Dashboard source: `/Users/ilkka/4dmölkky/docs/gamejam-control/`
 - Site ID: `01a06214-3c4c-74db-8cfd-93fb646dd5c9`
 - Current version ID: `01a06214-3c51-7349-b7f9-72b1f14a94da`

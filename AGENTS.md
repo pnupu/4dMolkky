@@ -7,8 +7,8 @@ This repository is a persistent LLM-maintained wiki for researching and designin
 Build a practical knowledge base that helps answer:
 
 - How should Mölkky rules, throwing, scoring, and pin layout translate into four spatial dimensions?
-- Can HackerPoet's Engine4D support the prototype, especially in VR?
-- What Unity, XR, input, physics, rendering, and interaction work is needed?
+- How should the project's own web engine in `game/` grow: physics, rendering, interaction, and a WebXR path to VR?
+- What can still be learned from HackerPoet's Engine4D, the previous engine?
 - What should the first playable prototype contain?
 
 ## Structure
@@ -33,7 +33,7 @@ When ingesting a source:
 5. Update `wiki/index.md`.
 6. Append to `wiki/log.md`.
 
-Do not present a derived claim as a source claim. Engine4D facts should cite the Engine4D source page. Mölkky or VR facts should cite their own source pages once added.
+Do not present a derived claim as a source claim. Engine4D facts should cite the Engine4D source page. Facts about the web game should cite its code, tests, or a recorded run. Mölkky or VR facts should cite their own source pages once added.
 
 ## Page Conventions
 
@@ -55,6 +55,7 @@ Prefer short, focused pages over large catch-all documents. If a section starts 
 
 ## Current Assumptions
 
-- The target is a VR game, but Engine4D's README currently says VR/XR support is still a work in progress.
-- The first phase is research and prototype planning, not a full Unity implementation.
+- The game is the browser build in `game/` (TypeScript, three.js, project 4D physics). See `wiki/design/Web Rebuild.md` and `game/README.md`.
+- The Unity and Engine4D prototype under `external/Engine4D` is legacy reference. Do not extend it unless asked.
+- Desktop is the tested target. VR remains the long-term goal, through WebXR; it is not built yet.
 - The game should retain recognizable Mölkky identity while making the fourth spatial dimension meaningful rather than cosmetic.
