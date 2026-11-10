@@ -47,7 +47,7 @@ All items below are project decisions (**Inference**), not sourced Mölkky or En
 
 - Scoring, bust to 25, three-miss elimination, last-side-standing and turn order follow [[Mölkky Rules Model]]. With two or more players, an eliminated player's score becomes 0 and the last player standing receives 50 (tournament rule in [[Mölkky Rules]]). A solo player keeps the score when three misses end the game: a project decision.
 - Fallen means settled, axis within about 15 degrees of flat, and centre low. A pin resting on another pin or on the skittle is steeper or higher and does not count ([[IMO Tournament Rules]] interpretation).
-- Re-standing keeps the point where the base met the ground, nearest the throwing line first, with no overlap. W position is preserved.
+- Re-standing pivots the pin upright on the point where its base met the ground, nearest the throwing line first. A pin that tipped over without sliding returns to where it stood. Its position in all three ground directions, W included, is kept. Pins that are stood up do not overlap; pins that stayed standing are not moved.
 
 ### Presentation
 
@@ -58,7 +58,7 @@ All items below are project decisions (**Inference**), not sourced Mölkky or En
 
 ## Evidence
 
-- 41 unit tests: 4D maths, shape, free motion (angular momentum and energy), single-pin stability and falls along X, Z and W, collisions, determinism, rules, rack, re-standing, a scripted full match, and slice geometry (`r² = R² − d²`, ball cross-section, winding).
+- 42 unit tests: 4D maths, shape, free motion (angular momentum and energy), single-pin stability and falls along X, Z and W, collisions, determinism, rules, rack, re-standing, a scripted full match, and slice geometry (`r² = R² − d²`, ball cross-section, winding).
 - Headless Chrome on the Air (Apple M4, Metal): a scripted match runs to the end with no console errors. Frame time at 2160x1350: 11 ms median while aiming, 15 ms during a throw. Physics: about 1 ms per step on average, 5 to 8 ms at the worst impact frame.
 - Evidence type: fixture and headless-browser runs. No human playtest record exists yet.
 

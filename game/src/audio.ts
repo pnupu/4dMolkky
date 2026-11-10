@@ -6,6 +6,7 @@ export class Sound {
   private master: GainNode | null = null;
   private noise: AudioBuffer | null = null;
   private lastKnock = 0;
+  private lastThud = 0;
   private birdTimer = 0;
   muted = false;
 
@@ -107,8 +108,8 @@ export class Sound {
   thud(strength: number): void {
     if (!this.context) return;
     const now = this.context.currentTime;
-    if (now - this.lastKnock < 0.02) return;
-    this.lastKnock = now;
+    if (now - this.lastThud < 0.02) return;
+    this.lastThud = now;
     const level = Math.min(1, strength / 1.5) ** 0.6;
     this.burst(0.09, "lowpass", 420, 0.7, 0.55 * level);
     this.tone(95, 0.12, 0.4 * level, 0, "sine", 0.6);

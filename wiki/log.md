@@ -241,3 +241,9 @@ First automatic review round on the pull request (Claude and Codex reviewers, sa
 ## [2026-11-10] publication | Build and clip with the new feel
 
 Republished the playable build at the same URL with the heavier skittle and dead ground (version `01a1c4e9-fffa-7229-8263-7e94666f8f53`). One scripted hit against the public URL felled all twelve pins with no console errors. Re-recorded the gameplay clip with the same script and republished it at the same URL (version `01a1c4ec-1430-72e8-9c08-a62bb7b9befb`): 44.3 seconds, 1280x720, 11,844,015 bytes, no sound. The public MP4 matches the local file (SHA-256), and in Chrome at 390x844 the clip loads, advances and seeks to 30 seconds with no page errors.
+
+## [2026-11-10] delivery + review follow-up | Merged, then the re-standing pivot
+
+Pull request 1 merged to `main` as `96c60a9` after four automatic review rounds; the last two returned no blocker or should from either reviewer. Declined nits, left as follow-ups: standing pins that slid together can sit up to 0.5 mm inside each other; sleeping pins wake one neighbour per substep; a piece that rests only on other pieces waits for the 9-second timeout; a few unused helpers.
+
+The last review found that re-standing put a fallen pin one radius past its base point toward its top, where the rule pivots it upright on the base point (one radius the other way). Fixed. Measured on a pin tipped 35 degrees and re-stood: it returns within 0.5 cm of where it stood along the fall, in X, Z and W (before: about 6 cm off). While lying it also rolls a few centimetres sideways, heavy side down; that is the 4D pin's own motion and is kept. Also fixed: the aim line stayed drawn behind the menu, the hidden throw-bar chips still took clicks, and ground thuds muted wood knocks in the same frame. Tests: 42 pass.
