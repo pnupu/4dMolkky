@@ -231,6 +231,7 @@ export class App {
     this.paused = false;
     this.field.rack();
     this.removeSkittleVisual();
+    this.aim.hide();
     this.sliceTarget = 0;
     this.hud.setPlaying(false);
     this.hud.showPause(false);

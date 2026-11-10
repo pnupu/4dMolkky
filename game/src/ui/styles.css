@@ -249,11 +249,14 @@ body {
   grid-template-columns: 1fr minmax(0, 420px) 1fr;
   align-items: end;
   gap: var(--s4);
-  transition: opacity 0.3s var(--ease);
+  transition:
+    opacity 0.3s var(--ease),
+    visibility 0.3s;
 }
 
 .throwbar.hidden {
   opacity: 0;
+  visibility: hidden;
 }
 
 .power {

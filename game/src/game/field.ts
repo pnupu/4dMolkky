@@ -219,11 +219,14 @@ export class Field {
       let ground: Vec4 = [base[0], 0, base[2], base[3]];
       if (state !== "standing") {
         const flat = normalize([axis[0], 0, axis[2], axis[3]]);
-        // Lowest point of the base: straight down inside the base ball.
+        // Lowest point of the base: straight down inside the base ball. The pin is
+        // lifted by its top and pivots on that point, so the base centre ends one
+        // radius behind it, away from the top. A pin that tipped over without sliding
+        // goes back to where it stood.
         const down = normalize(addScaled([0, -1, 0, 0], axis, axis[1]));
         const touch = addScaled(base, down, PIN_RADIUS);
         if (touch[1] < 0.02)
-          ground = add([touch[0], 0, touch[2], touch[3]], scale(flat, PIN_RADIUS));
+          ground = add([touch[0], 0, touch[2], touch[3]], scale(flat, -PIN_RADIUS));
         else ground = [body.pos[0], 0, body.pos[2], body.pos[3]];
       }
       moved.push({ pin, ground });

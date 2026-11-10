@@ -2,7 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { PIN_RADIUS } from "../src/game/equipment";
 import { Field, RACK, type ThrowInput } from "../src/game/field";
 import { Match, throwPoints } from "../src/game/rules";
-import { len, sub } from "../src/math4";
+import { len, mulMM, mulMV, planeRotation, sub } from "../src/math4";
 
 const strong: ThrowInput = { slice: 0, yaw: 0, loft: 0.2, speed: 7.5, style: "wide" };
 
@@ -185,6 +185,35 @@ describe("field", () => {
     for (const p of field.pins) p.body.wake();
     for (let i = 0; i < 120; i++) field.step(1 / 60);
     expect(field.fallen()).toEqual([]);
+  });
+
+  test("a pin that tips over and is re-stood goes back to where it stood", () => {
+    const field = new Field();
+    // Spread the rack out, so that only pin 1 is involved.
+    field.pins.forEach((p, i) => {
+      if (i > 0) p.body.pos[0] += 3 + i;
+    });
+    const pin = field.pins[0].body;
+    const before = pin.toWorld(pin.shape.baseCenter);
+    // Tip it 35 degrees toward +X about its base centre and let it fall.
+    pin.rot.set(mulMM(planeRotation(1, 0, (35 * Math.PI) / 180), pin.shape.P));
+    const offset = mulMV(pin.rot, pin.shape.baseCenter);
+    pin.pos = [
+      before[0] - offset[0],
+      0.001 - offset[1],
+      before[2] - offset[2],
+      before[3] - offset[3],
+    ];
+    pin.wake();
+    for (let i = 0; i < 360; i++) field.step(1 / 60);
+    expect(field.fallen()).toEqual([1]);
+    field.restand();
+    const after = pin.toWorld(pin.shape.baseCenter);
+    // Along the fall the pin pivots back on its base edge. Sideways it may roll a few
+    // centimetres while it lies: a lying 4D pin rolls like a ball, heavy side down.
+    expect(Math.abs(after[0] - before[0])).toBeLessThan(0.01);
+    expect(Math.hypot(after[2] - before[2], after[3] - before[3])).toBeLessThan(0.06);
+    expect(Math.abs(pin.axis()[1])).toBeGreaterThan(0.9999);
   });
 
   test("a full solo match can be played to the end", () => {
